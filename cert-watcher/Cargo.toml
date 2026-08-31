@@ -1,0 +1,20 @@
+[package]
+name = "cert-watcher"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[dependencies]
+notify-debouncer-mini = { version = "0.7.0", default-features = false }
+
+[profile.release]
+# Code size optimization (replaces default -O3)
+opt-level = "z"
+# Enables Link-Time Optimization (removes unused code from dependencies)
+lto = true
+# Decrease parallel build but improve optimization of binary
+codegen-units = 1
+# Disable stack unwinding
+panic = "abort"
+# Delete debug symbols and import table
+strip = true

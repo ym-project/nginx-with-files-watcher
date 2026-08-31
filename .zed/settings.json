@@ -1,0 +1,22 @@
+{
+	"tab_size": 4,
+	"hard_tabs": true,
+	"ensure_final_newline_on_save": true,
+	"languages": {
+		"YAML": {
+			"format_on_save": "on",
+			"hard_tabs": false,
+			"tab_size": 2,
+		},
+		"JSON": {
+			"format_on_save": "on",
+		},
+		"JSONC": {
+			"format_on_save": "on",
+		},
+		"Rust": {
+			"format_on_save": "on",
+			"prettier": { "allowed": false },
+		},
+	},
+}
