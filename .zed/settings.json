@@ -3,16 +3,19 @@
 	"hard_tabs": true,
 	"ensure_final_newline_on_save": true,
 	"languages": {
-		"YAML": {
-			"format_on_save": "on",
-			"hard_tabs": false,
-			"tab_size": 2,
-		},
 		"JSON": {
 			"format_on_save": "on",
 		},
 		"JSONC": {
 			"format_on_save": "on",
+		},
+		"TOML": {
+			"format_on_save": "on",
+		},
+		"Markdown": {
+			"format_on_save": "on",
+			"hard_tabs": false,
+			"tab_size": 2,
 		},
 		"Rust": {
 			"format_on_save": "on",
