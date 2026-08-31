@@ -2,7 +2,8 @@ use notify_debouncer_mini::{DebounceEventResult, new_debouncer, notify::Recursiv
 use std::{env, path::Path, process::Command, thread::sleep, time::Duration};
 
 fn main() {
-	let cert_dir = env::var("CERT_WATCHER_DIR").unwrap();
+	let cert_dir =
+		env::var("CERT_WATCHER_DIR").expect("env variable `CERT_WATCHER_DIR` is required");
 	let debounce_time = Duration::from_secs(5);
 	let loop_interval = Duration::from_secs(60);
 
