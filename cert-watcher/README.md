@@ -5,7 +5,7 @@ Utility watches files changes and restart nginx
 ## Building
 
 1. `cargo build --release` - build release version
-2. `upx --best --lzma target/release/cert_watcher` - compress built binary
+2. `upx --best --lzma target/release/cert-watcher` - compress built binary
 
 ## Linting
 

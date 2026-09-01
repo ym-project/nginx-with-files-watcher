@@ -1,5 +1,18 @@
-use notify_debouncer_mini::{DebounceEventResult, new_debouncer, notify::RecursiveMode};
+use notify_debouncer_full::{
+	DebounceEventResult, DebouncedEvent, new_debouncer,
+	notify::{EventKind, RecursiveMode, event::ModifyKind},
+};
 use std::{env, path::Path, process::Command, thread::sleep, time::Duration};
+
+fn is_event_relevant(event: &DebouncedEvent) -> bool {
+	matches!(
+		event.kind,
+		EventKind::Create(_)
+			| EventKind::Remove(_)
+			| EventKind::Modify(ModifyKind::Data(_))
+			| EventKind::Modify(ModifyKind::Name(_))
+	)
+}
 
 fn main() {
 	let cert_dir =
@@ -9,11 +22,20 @@ fn main() {
 
 	println!("Starting certificate watcher for {}", cert_dir);
 
-	let mut debouncer = new_debouncer(debounce_time, |result: DebounceEventResult| {
+	let mut debouncer = new_debouncer(debounce_time, None, |result: DebounceEventResult| {
 		match result {
 			Ok(events) => {
-				println!("Detected {} changes", events.len());
+				// Track only certain events
+				let relevant_events: Vec<&DebouncedEvent> =
+					events.iter().filter(|event| is_event_relevant(event)).collect();
 
+				if relevant_events.is_empty() {
+					return;
+				}
+
+				println!("Detected {} changes", relevant_events.len());
+
+				// Reload nginx
 				let command_result = Command::new("nginx").args(["-s", "reload"]).status();
 
 				if let Ok(exit_status) = command_result
@@ -24,13 +46,17 @@ fn main() {
 					eprintln!("Nginx reload failed");
 				}
 			},
-			Err(err) => eprintln!("Watch error: {:?}", err),
+			Err(errors) => {
+				for error in errors {
+					eprintln!("Watch error: {error:?}");
+				}
+			},
 		};
 	})
 	.unwrap();
 
 	// Watch changes
-	debouncer.watcher().watch(Path::new(&cert_dir), RecursiveMode::Recursive).unwrap();
+	debouncer.watch(Path::new(&cert_dir), RecursiveMode::Recursive).unwrap();
 
 	// Keep main thread alive
 	loop {
