@@ -11,9 +11,16 @@ RUN apk add --no-cache upx
 # Set work dir
 WORKDIR /app
 
-# Copy source files
+# Copy Cargo files
 COPY cert-watcher/Cargo.toml .
 COPY cert-watcher/Cargo.lock .
+
+# Download dependencies
+# Very important to pass --target. Without this flag cargo tries to download windows' or macos'
+# dependencies.
+RUN cargo fetch --locked --target x86_64-unknown-linux-musl
+
+# Copy source files
 COPY cert-watcher/src src
 
 # Build

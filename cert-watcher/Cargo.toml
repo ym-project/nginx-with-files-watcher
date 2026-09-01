@@ -4,6 +4,19 @@ version = "0.0.0"
 publish = false
 edition = "2024"
 
+# Docker file has `RUN cargo fetch`. We don't pass src folder so Dockerfile has error:
+# ```
+# error: failed to parse manifest at `/app/Cargo.toml`
+# Caused by:
+#   no targets specified in the manifest
+#   either src/lib.rs, src/main.rs, a [lib] section, or [[bin]] section must be present
+# ```
+#
+# Secion `[[bin]]` makes everything fine
+[[bin]]
+name = "cert-watcher"
+path = "src/main.rs"
+
 [dependencies]
 notify-debouncer-full = { version = "0.7.0", default-features = false }
 
