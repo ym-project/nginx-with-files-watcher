@@ -18,5 +18,5 @@ for dir in $WATCHER_DIRECTORIES; do
 done
 IFS=$old_ifs
 
-# Start cert watcher in background
-/cert-watcher &
+# Start files watcher in background
+/files-watcher &
