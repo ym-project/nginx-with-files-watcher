@@ -1,5 +1,5 @@
 [package]
-name = "cert-watcher"
+name = "files-watcher"
 version = "0.0.0"
 publish = false
 edition = "2024"
@@ -14,7 +14,7 @@ edition = "2024"
 #
 # Secion `[[bin]]` makes everything fine
 [[bin]]
-name = "cert-watcher"
+name = "files-watcher"
 path = "src/main.rs"
 
 [dependencies]

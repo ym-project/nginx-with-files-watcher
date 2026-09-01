@@ -14,13 +14,18 @@ fn is_event_relevant(event: &DebouncedEvent) -> bool {
 	)
 }
 
+/// Parse comma-separated directory list
+fn parse_directories(raw_directories: &str) -> Vec<&str> {
+	raw_directories.split(',').map(|i| i.trim()).filter(|i| !i.is_empty()).collect()
+}
+
 fn main() {
-	let cert_dir =
-		env::var("CERT_WATCHER_DIR").expect("env variable `CERT_WATCHER_DIR` is required");
+	let raw_directories =
+		env::var("WATCHER_DIRECTORIES").expect("env variable `WATCHER_DIRECTORIES` is required");
+	let directories = parse_directories(&raw_directories);
+
 	let debounce_time = Duration::from_secs(5);
 	let loop_interval = Duration::from_secs(60);
-
-	println!("Starting certificate watcher for {}", cert_dir);
 
 	let mut debouncer = new_debouncer(debounce_time, None, |result: DebounceEventResult| {
 		match result {
@@ -55,8 +60,11 @@ fn main() {
 	})
 	.unwrap();
 
-	// Watch changes
-	debouncer.watch(Path::new(&cert_dir), RecursiveMode::Recursive).unwrap();
+	for directory in &directories {
+		println!("Starting watcher for {}", directory);
+		// Watch directory changes
+		debouncer.watch(Path::new(directory), RecursiveMode::Recursive).unwrap();
+	}
 
 	// Keep main thread alive
 	loop {
